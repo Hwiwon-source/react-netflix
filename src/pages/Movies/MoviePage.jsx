@@ -97,29 +97,6 @@ const MoviePage = () => {
           </div>
         </Col>
       </Row>
-
-      {/* <ReactPaginate
-        className="MoviePage-pagination"
-        nextLabel=">"
-        onPageChange={handlePageClick}
-        pageRangeDisplayed={5}
-        marginPagesDisplayed={2}
-        pageCount={data?.total_pages} // 전체 페이지의 개수
-        previousLabel="<"
-        pageClassName="page-item"
-        pageLinkClassName="page-link"
-        previousClassName="page-item"
-        previousLinkClassName="page-link"
-        nextClassName="page-item"
-        nextLinkClassName="page-link"
-        breakLabel="..."
-        breakClassName="page-item"
-        breakLinkClassName="page-link"
-        containerClassName="pagination"
-        activeClassName="active"
-        renderOnZeroPageCount={null}
-        forcePage={page - 1}
-      /> */}
     </Container>
   );
 };

@@ -19,7 +19,7 @@ const UpcomingMoiveSlide = () => {
   return (
     <div className="UpcomingMoiveSlide text-white">
       <MovieSlider
-        title={"Upcoming Movies"}
+        title={"개봉 예정 영화"}
         movies={data.results}
         responsive={upcomingResponsive}
       />

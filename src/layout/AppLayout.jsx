@@ -49,17 +49,17 @@ const AppLayout = () => {
               navbarScroll
             >
               <Nav.Link as={Link} to="/">
-                Home
+                홈
               </Nav.Link>
               <Nav.Link as={Link} to="/movies">
-                Movies
+                영화
               </Nav.Link>
             </Nav>
 
             <Form className="d-flex" onSubmit={searchByKeyword}>
               <Form.Control
                 type="search"
-                placeholder="Search"
+                placeholder="검색"
                 className="me-2 custom-input"
                 aria-label="Search"
                 value={keyword}

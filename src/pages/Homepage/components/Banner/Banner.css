@@ -8,6 +8,7 @@
   justify-content: center;
   align-items: center;
   position: relative;
+  transition: 1s all;
 }
 
 .Banner:before {
@@ -29,7 +30,8 @@
 
 .Banner-text-area h1 {
   font-family: 'Bebas Neue', sans-serif;
-  font-size: 3rem;
+  font-weight: 900;
+  font-size: 2.5rem;
 }
 
 .Banner-text-area p {

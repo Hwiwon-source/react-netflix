@@ -1,9 +1,15 @@
 .MovieDetail {
   display: flex;
+  flex-direction: column;
   color: #fff;
   padding: 20px;
   font-family: Arial, sans-serif;
   gap: 20px;
+}
+
+.MovieDetail .movie-wrap {
+  display: flex;
+  gap: 30px;
 }
 
 .MovieDetail .movie-poster {
@@ -114,7 +120,7 @@
 }
 
 @media(max-width: 768px){
-  .MovieDetail {
+  .MovieDetail .movie-wrap {
     flex-direction: column;
   }
 
@@ -135,4 +141,106 @@
   .MovieDetail .movie-rating {
     justify-content: center;
   }
+}
+
+/* movie-detail-tap */
+/* 기본적인 탭 스타일 */
+#movie-detail-tabs {
+  border-bottom: 2px solid #333; /* 탭 하단 경계선 */
+}
+
+#movie-detail-tabs .nav-link {
+  color: #b3b3b3; /* 기본 탭 텍스트 색상 */
+  background-color: transparent; /* 다크 배경 */
+  border: none;
+  padding: 10px 20px;
+  font-weight: bold;
+  transition: color 0.3s, background-color 0.3s;
+}
+
+#movie-detail-tabs .nav-link:hover {
+  color: #fff; /* 마우스 오버 시 텍스트 색상 변경 */
+}
+
+#movie-detail-tabs .nav-link.active {
+  color: #fff; /* 활성화된 탭의 텍스트 색상 */
+  border-bottom: 3px solid #e50914; /* 하단 경계선에 Netflix의 빨간색 적용 */
+}
+
+.reviews, .recommendations-movies {
+  background-color: #1c1c1c; /* 다크한 섹션 배경 */
+  padding: 20px;
+  border-radius: 8px; /* 둥근 모서리 */
+  margin-top: 20px;
+}
+
+/* 리뷰 아이템 */
+.review-item {
+  border-bottom: 1px solid #333; /* 경계선 */
+  padding: 10px 0;
+  color: #fff;
+}
+
+.review-item h5 {
+  color: #e50914; /* 리뷰 작성자의 이름에 포인트 컬러 적용 */
+  font-size: 18px;
+}
+
+.review-item p {
+  color: #b3b3b3; /* 리뷰 내용의 기본 텍스트 색상 */
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+/* 추천 영화 */
+.recommendations-movies-wrapper {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.movie-card-wrapper {
+  margin-bottom: 20px;
+  transition: transform 0.3s;
+}
+
+.movie-card-wrapper:hover {
+  transform: scale(1.05); /* 마우스 오버 시 영화 카드 확대 */
+}
+
+/* 더보기/접기 버튼 스타일 */
+.my-anchor-css-class {
+  color: #e50914; /* 더보기/접기 버튼에 Netflix 포인트 색상 적용 */
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.my-anchor-css-class:hover {
+  color: #fff; /* 마우스 오버 시 버튼 색상 변경 */
+}
+
+.modal-header {
+  background-color: #1c1c1c;
+  color: #fff;
+}
+
+.modal-header .modal-title {
+  font-size: 1.3rem;
+}
+
+.modal-header .btn-close {
+  filter: invert(100%); /* 닫기 버튼을 흰색으로 변경 */
+  opacity: 0.7;
+  transition: 0.3s opacity;
+}
+.modal-header .btn-close:hover {
+  opacity: 1;
+}
+
+.modal-body {
+  background-color: #1c1c1c;
+}
+
+.modal-body iframe {
+  width: 100%;
+  min-height: 500px;
 }

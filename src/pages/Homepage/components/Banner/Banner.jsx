@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { usePopularMoviesQuery } from "../../../../hooks/usePopularMovies";
 import Alert from "react-bootstrap/Alert";
 import "./Banner.css";
@@ -8,6 +8,16 @@ import LoadingSpinner from "../../../../common/LoadingSpinner/LoadingSpinner";
 const Banner = () => {
   // useQuery가 리턴하는 값들을 기억하라
   const { data, isLoading, isError, error } = usePopularMoviesQuery();
+  const [rndIdx, setRndIdx] = useState(0);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      const randomValue = Math.floor(Math.random() * data.results.length);
+      setRndIdx(randomValue);
+    }, 8000);
+
+    return () => clearInterval(interval);
+  }, [data]);
 
   if (isLoading) {
     return <LoadingSpinner color={"#e50914"} size={250} />;
@@ -18,14 +28,14 @@ const Banner = () => {
   return (
     <div
       style={{
-        backgroundImage: `url(https://media.themoviedb.org/t/p/w533_and_h300_bestv2${data.results[0].poster_path})`,
+        backgroundImage: `url(https://media.themoviedb.org/t/p/original/${data.results[rndIdx].poster_path})`,
       }}
       className="Banner"
     >
       <Container className="Banner-container text-white">
         <div className="Banner-text-area">
-          <h1>{data?.results[0].title}</h1>
-          <p>{data?.results[0].overview}</p>
+          <h1>{data?.results[rndIdx].title}</h1>
+          <p>{data?.results[rndIdx].overview}</p>
         </div>
       </Container>
     </div>

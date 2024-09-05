@@ -19,7 +19,7 @@ const PopularMovieSlide = () => {
   return (
     <div className="PopularMovieSlide text-white">
       <MovieSlider
-        title="Popular Movies"
+        title="인기 있는 영화"
         movies={data.results}
         responsive={popularResponsive}
       />
