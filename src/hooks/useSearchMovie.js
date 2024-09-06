@@ -35,8 +35,6 @@ const fetchMovies = async ({ queryKey }) => {
   // 키워드가 있는 경우
   if (keyword) {
     url = `/search/movie?query=${keyword}&page=${page}&language=ko`;
-  } else {
-    url = `/movie/popular?page=${page}&language=ko`;
   }
 
   // 장르가 있는 경우
