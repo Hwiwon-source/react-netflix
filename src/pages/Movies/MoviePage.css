@@ -2,16 +2,21 @@
   padding: 50px 0;
 }
 
-.movie-card-wrapper {
+.MoviePage .movie-card-wrapper {
   /* border: 3px solid blue; */
   display: flex;
-  justify-content: flex-end;
   margin: 15px 0;
 }
 
 @media(max-width: 768px){
-  .movie-card-wrapper {
+  .MoviePage .movie-card-wrapper {
     justify-content: center;
+  }
+
+  .MoviePage .movie-card {
+    /* border: 2px solid green; */
+    width: 100%;
+    height: 300px;
   }
 }
 
@@ -75,4 +80,78 @@
   align-items: center;
   min-height: 300px;
   background: url(../../../public/noData.png) no-repeat center/contain
+}
+
+/* 전체 필터 영역 */
+.filter-area {
+  padding: 20px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+}
+
+/* 장르 섹션 */
+.genre-section {
+  margin-bottom: 20px;
+}
+
+.genre-section button {
+  background: #333;
+  outline: none;
+  color: #fff;
+  padding: 5px 10px;
+  border-radius: 4px;
+  border: none;
+  margin: 5px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+/* 정렬 옵션 섹션 */
+.sort-options-container {
+  margin-top: 20px;
+}
+
+.sort-options {
+  background-color: #333;
+  color: #fff;
+  border: 1px solid #444;
+  border-radius: 4px;
+  padding: 10px;
+  font-size: 16px;
+  width: 100%;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+/* 반응형 디자인 */
+@media (max-width: 768px) {
+  .filter-area {
+    padding: 15px;
+  }
+
+  .genre-section button {
+    padding: 8px 12px;
+    font-size: 14px;
+  }
+
+  .sort-options { 
+    font-size: 14px;
+  }
+
+}
+
+@media (max-width: 576px) {
+  .filter-area {
+    padding: 10px;
+  }
+
+  .genre-section button {
+    padding: 6px 10px;
+    font-size: 12px;
+  }
+
+  .sort-options {
+    font-size: 12px;
+  }
 }

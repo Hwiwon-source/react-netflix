@@ -6,7 +6,7 @@ import Container from "react-bootstrap/Container";
 import Form from "react-bootstrap/Form";
 import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
-import { Link, Outlet, useNavigate } from "react-router-dom";
+import { Outlet, useNavigate } from "react-router-dom";
 import "./AppLayout.css";
 
 const AppLayout = () => {
@@ -15,6 +15,9 @@ const AppLayout = () => {
 
   const goToHome = () => {
     navigate("/");
+  };
+  const goToMovie = () => {
+    navigate("/movies", { replace: true });
   };
 
   const searchByKeyword = (e) => {
@@ -48,12 +51,8 @@ const AppLayout = () => {
               style={{ maxHeight: "100px" }}
               navbarScroll
             >
-              <Nav.Link as={Link} to="/">
-                홈
-              </Nav.Link>
-              <Nav.Link as={Link} to="/movies">
-                영화
-              </Nav.Link>
+              <Nav.Link onClick={goToHome}>홈</Nav.Link>
+              <Nav.Link onClick={goToMovie}>영화</Nav.Link>
             </Nav>
 
             <Form className="d-flex" onSubmit={searchByKeyword}>

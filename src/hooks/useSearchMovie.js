@@ -26,26 +26,33 @@
 import { useQuery } from "@tanstack/react-query";
 import api from "../utils/api";
 
-const fetchSearchMovie = async ({ keyword, genre, page }) => {
-  const language = "ko-KR";
+// 검색 영화 데이터 가져오는 함수
+const fetchMovies = async ({ queryKey }) => {
+  const [, { keyword, genreId, page, sortOrder }] = queryKey;
 
+  let url = `/discover/movie?page=${page}&sort_by=${sortOrder}&language=ko`;
+
+  // 키워드가 있는 경우
   if (keyword) {
-    return api.get(
-      `/search/movie?query=${keyword}&page=${page}&language=${language}`
-    );
-  } else if (genre) {
-    return api.get(
-      `/discover/movie?with_genres=${genre}&page=${page}&language=${language}`
-    );
+    url = `/search/movie?query=${keyword}&page=${page}&language=ko`;
+  } else {
+    url = `/movie/popular?page=${page}&language=ko`;
   }
-  return api.get(`/movie/popular?page=${page}&language=${language}`);
+
+  // 장르가 있는 경우
+  if (genreId) {
+    url += `&with_genres=${genreId}`;
+  }
+
+  return await api.get(url);
 };
 
-export const useSearchMovieQuery = ({ keyword, genre, page }) => {
+// 커스텀 훅 정의
+export const useSearchMovieQuery = ({ keyword, genreId, page, sortOrder }) => {
   return useQuery({
-    queryKey: ["movie-search", keyword, genre, page],
-    queryFn: () => fetchSearchMovie({ keyword, genre, page }),
+    queryKey: ["movie-search", { keyword, genreId, page, sortOrder }],
+    queryFn: fetchMovies,
     select: (result) => result.data,
-    enabled: Boolean(page !== null),
+    keepPreviousData: true,
   });
 };

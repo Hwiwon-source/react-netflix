@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { Alert, Col, Container, Row } from "react-bootstrap";
+import { Alert, Button, Col, Container, Row } from "react-bootstrap";
 import { useSearchParams } from "react-router-dom";
 import LoadingSpinner from "../../common/LoadingSpinner/LoadingSpinner";
 import MovieCard from "../../common/MovieCard/MovieCard";
 import "./MoviePage.css";
 import ReactPaginate from "react-paginate";
-import { useDiscoverGenreQuery } from "../../hooks/useDiscoverGenre";
 import { useSearchMovieQuery } from "../../hooks/useSearchMovie";
 import { useMovieGenreQuery } from "../../hooks/useMovieGenre";
 
@@ -16,17 +15,13 @@ const MoviePage = () => {
   const page = parseInt(query.get("page"), 10) || 1;
   const sortOrder = query.get("sortOrder") || "popular";
 
-  // 장르별 영화 목록을 가져오는 커스텀 훅
+  // 영화 데이터 가져오는 커스텀 훅
   const {
-    data: genreMovies,
-    isLoading: genreLoading,
-    isError: genreError,
-  } = useDiscoverGenreQuery({ genreId: genre, page, sortOrder });
-  const {
-    data: searchMovies,
-    isLoading: searchLoading,
-    isError: searchError,
-  } = useSearchMovieQuery({ keyword, page, sortOrder });
+    data: moviesData,
+    isLoading,
+    isError,
+  } = useSearchMovieQuery({ keyword, genreId: genre, page, sortOrder });
+
   const { data: genres } = useMovieGenreQuery();
 
   // 정렬 필터
@@ -61,42 +56,40 @@ const MoviePage = () => {
     });
   };
 
-  if (genreLoading || searchLoading) {
+  if (isLoading) {
     return <LoadingSpinner color={"#e50914"} size={250} />;
   }
-  if (genreError || searchError) {
-    return (
-      <Alert variant="danger">{(genreError || searchError).message}</Alert>
-    );
+  if (isError) {
+    return <Alert variant="danger">{isError.message}</Alert>;
   }
 
-  const movies = selectedGenre ? genreMovies?.results : searchMovies?.results;
-  const totalPages = selectedGenre
-    ? genreMovies?.total_pages
-    : searchMovies?.total_pages;
+  const movies = moviesData?.results;
+  const totalPages = moviesData?.total_pages;
 
   const hasResults = movies && movies.length > 0;
 
   return (
     <Container className="MoviePage text-white">
       <Row>
-        <Col lg={4} md={3} xs={12}>
+        <Col lg={4} md={3} xs={12} className="filter-area">
           <div className="genre-section">
-            <button
+            <Button
+              variant="danger"
               onClick={() => handleGenreClick(null)}
               className={!selectedGenre ? "active" : ""}
             >
               전체
-            </button>
+            </Button>
             {genres &&
               genres.map((genre) => (
-                <button
+                <Button
+                  variant="danger"
                   key={genre.id}
                   onClick={() => handleGenreClick(genre.id)}
                   className={selectedGenre === genre.id ? "active" : ""}
                 >
                   {genre.name}
-                </button>
+                </Button>
               ))}
           </div>
           <div className="sort-options-container">
@@ -105,13 +98,13 @@ const MoviePage = () => {
               value={sortOption}
               onChange={handleSortChange}
             >
-              <option value="popular">인기 높은 순</option>
-              <option value="least-popular">인기 낮은 순</option>
-              <option value="release">최신순</option>
+              <option value="popularity.desc">인기 높은 순</option>
+              <option value="vote_average.desc">평점 높은 순</option>
+              <option value="release_date.desc">최신 순</option>
             </select>
           </div>
         </Col>
-        <Col lg={8} md={9} xs={12}>
+        <Col lg={8} md={9} xs={12} className="movie-area">
           <Row>
             {hasResults ? (
               movies.map((movie, idx) => (
@@ -120,7 +113,7 @@ const MoviePage = () => {
                   key={idx}
                   lg={4}
                   md={6}
-                  xs={12}
+                  xs={6}
                 >
                   <MovieCard movie={movie} />
                 </Col>
