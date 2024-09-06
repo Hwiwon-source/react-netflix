@@ -1,72 +1,130 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Alert, Col, Container, Row } from "react-bootstrap";
-import { useSearchMovieQuery } from "../../hooks/useSearchMovie";
 import { useSearchParams } from "react-router-dom";
 import LoadingSpinner from "../../common/LoadingSpinner/LoadingSpinner";
 import MovieCard from "../../common/MovieCard/MovieCard";
 import "./MoviePage.css";
 import ReactPaginate from "react-paginate";
-
-// 경로 2가지
-// 1. navbar에서 클릭 => keyword x => popularMovie
-// 2. keyword를 입력 => keyword와 관련된 영화들을 보여줌
-
-// MoviePage의 url을 변경한 것은,
-// url에서 keyword를 가져오기 위함이다.
-
-// 페이지네이션 설치
-// page state 만들기
-// 페이지네이션 클릭할 때마다 page 바꿔주기
-// page 값이 바뀔 때 마다 useSearchMovie에 page까지 넣어서 fetch
+import { useDiscoverGenreQuery } from "../../hooks/useDiscoverGenre";
+import { useSearchMovieQuery } from "../../hooks/useSearchMovie";
+import { useMovieGenreQuery } from "../../hooks/useMovieGenre";
 
 const MoviePage = () => {
-  const [query] = useSearchParams();
-  const keyword = query.get("q");
+  const [query, setQuery] = useSearchParams();
+  const keyword = query.get("q") || "";
+  const genre = query.get("genre");
+  const page = parseInt(query.get("page"), 10) || 1;
+  const sortOrder = query.get("sortOrder") || "popular";
 
-  // pagination
-  const [page, setPage] = useState(1);
+  // 장르별 영화 목록을 가져오는 커스텀 훅
+  const {
+    data: genreMovies,
+    isLoading: genreLoading,
+    isError: genreError,
+  } = useDiscoverGenreQuery({ genreId: genre, page, sortOrder });
+  const {
+    data: searchMovies,
+    isLoading: searchLoading,
+    isError: searchError,
+  } = useSearchMovieQuery({ keyword, page, sortOrder });
+  const { data: genres } = useMovieGenreQuery();
 
-  const handlePageClick = ({ selected }) => {
-    setPage(selected + 1);
+  // 정렬 필터
+  const [selectedGenre, setSelectedGenre] = useState(genre || null);
+  const [sortOption, setSortOption] = useState(sortOrder);
+
+  useEffect(() => {
+    setQuery({ q: keyword, genre: selectedGenre, page, sortOrder: sortOption });
+  }, [keyword, selectedGenre, page, sortOption, setQuery]);
+
+  const handleGenreClick = (genreId) => {
+    setSelectedGenre(genreId);
+    setQuery({ q: keyword, genre: genreId, page: 1, sortOrder: sortOption });
   };
 
-  const { data, isLoading, isError, error } = useSearchMovieQuery({
-    keyword,
-    page,
-  });
-  console.log(data); // 데이터 확인 완료
+  const handleSortChange = (e) => {
+    setSortOption(e.target.value);
+    setQuery({
+      q: keyword,
+      genre: selectedGenre,
+      page: 1,
+      sortOrder: e.target.value,
+    });
+  };
 
-  if (isLoading) {
+  const handlePageClick = ({ selected }) => {
+    setQuery({
+      q: keyword,
+      genre: selectedGenre,
+      page: selected + 1,
+      sortOrder: sortOption,
+    });
+  };
+
+  if (genreLoading || searchLoading) {
     return <LoadingSpinner color={"#e50914"} size={250} />;
   }
-  if (isError) {
-    return <Alert variant="danger">{error.message}</Alert>;
+  if (genreError || searchError) {
+    return (
+      <Alert variant="danger">{(genreError || searchError).message}</Alert>
+    );
   }
 
-  const hasResults = data?.results.length > 0;
+  const movies = selectedGenre ? genreMovies?.results : searchMovies?.results;
+  const totalPages = selectedGenre
+    ? genreMovies?.total_pages
+    : searchMovies?.total_pages;
+
+  const hasResults = movies && movies.length > 0;
 
   return (
     <Container className="MoviePage text-white">
       <Row>
         <Col lg={4} md={3} xs={12}>
-          filter
+          <div className="genre-section">
+            <button
+              onClick={() => handleGenreClick(null)}
+              className={!selectedGenre ? "active" : ""}
+            >
+              전체
+            </button>
+            {genres &&
+              genres.map((genre) => (
+                <button
+                  key={genre.id}
+                  onClick={() => handleGenreClick(genre.id)}
+                  className={selectedGenre === genre.id ? "active" : ""}
+                >
+                  {genre.name}
+                </button>
+              ))}
+          </div>
+          <div className="sort-options-container">
+            <select
+              className="sort-options"
+              value={sortOption}
+              onChange={handleSortChange}
+            >
+              <option value="popular">인기 높은 순</option>
+              <option value="least-popular">인기 낮은 순</option>
+              <option value="release">최신순</option>
+            </select>
+          </div>
         </Col>
         <Col lg={8} md={9} xs={12}>
           <Row>
             {hasResults ? (
-              data?.results.map((movie, idx) => {
-                return (
-                  <Col
-                    className="movie-card-wrapper"
-                    key={idx}
-                    lg={4}
-                    md={6}
-                    xs={12}
-                  >
-                    <MovieCard movie={movie} />
-                  </Col>
-                );
-              })
+              movies.map((movie, idx) => (
+                <Col
+                  className="movie-card-wrapper"
+                  key={idx}
+                  lg={4}
+                  md={6}
+                  xs={12}
+                >
+                  <MovieCard movie={movie} />
+                </Col>
+              ))
             ) : (
               <div className="no-data">검색 결과가 존재하지 않습니다.</div>
             )}
@@ -78,9 +136,9 @@ const MoviePage = () => {
                 nextLabel={">"}
                 breakLabel={"..."}
                 breakClassName={"break-me"}
-                pageCount={data?.total_pages}
-                marginPagesDisplayed={2}
-                pageRangeDisplayed={3}
+                pageCount={totalPages}
+                marginPagesDisplayed={0}
+                pageRangeDisplayed={4}
                 onPageChange={handlePageClick}
                 containerClassName={"pagination"}
                 pageClassName={"page-item"}
