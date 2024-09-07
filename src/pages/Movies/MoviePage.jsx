@@ -58,7 +58,7 @@ const MoviePage = () => {
     setGenreTitle("전체");
     setSelectedGenreID(null);
     setSortTitle(sortList.popularityDesc);
-  }, [keyword]);
+  }, [keyword, sortList.popularityDesc]);
 
   // 페이지네이션 페이지번호+1
   const handlePageClick = ({ selected }) => {
