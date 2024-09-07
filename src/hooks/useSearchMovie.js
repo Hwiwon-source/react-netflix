@@ -1,3 +1,20 @@
+import { useQuery } from "@tanstack/react-query";
+import api from "../utils/api";
+
+const fetchSearchMovie = ({ keyword, page }) => {
+  return keyword
+    ? api.get(`search/movie?query=${keyword}&language=ko-KR&page=${page}`)
+    : api.get(`/movie/popular?language=ko-KR&page=${page}`);
+};
+
+export const useSearchMovieQuery = ({ keyword, page }) => {
+  return useQuery({
+    queryKey: ["movie-search", { keyword, page }],
+    queryFn: () => fetchSearchMovie({ keyword, page }),
+    select: (result) => result.data,
+  });
+};
+
 // import { useQuery } from "@tanstack/react-query";
 // import api from "../utils/api";
 
@@ -23,34 +40,34 @@
 //   });
 // };
 
-import { useQuery } from "@tanstack/react-query";
-import api from "../utils/api";
+// import { useQuery } from "@tanstack/react-query";
+// import api from "../utils/api";
 
-// 검색 영화 데이터 가져오는 함수
-const fetchMovies = async ({ queryKey }) => {
-  const [, { keyword, genreId, page, sortOrder }] = queryKey;
+// // 검색 영화 데이터 가져오는 함수
+// const fetchMovies = async ({ queryKey }) => {
+//   const [, { keyword, genreId, page, sortOrder }] = queryKey;
 
-  let url = `/discover/movie?page=${page}&sort_by=${sortOrder}&language=ko`;
+//   let url = `/discover/movie?page=${page}&sort_by=${sortOrder}&language=ko`;
 
-  // 키워드가 있는 경우
-  if (keyword) {
-    url = `/search/movie?query=${keyword}&page=${page}&language=ko`;
-  }
+//   // 키워드가 있는 경우
+//   if (keyword) {
+//     url = `/search/movie?query=${keyword}&page=${page}&language=ko`;
+//   }
 
-  // 장르가 있는 경우
-  if (genreId) {
-    url += `&with_genres=${genreId}`;
-  }
+//   // 장르가 있는 경우
+//   if (genreId) {
+//     url += `&with_genres=${genreId}`;
+//   }
 
-  return await api.get(url);
-};
+//   return await api.get(url);
+// };
 
-// 커스텀 훅 정의
-export const useSearchMovieQuery = ({ keyword, genreId, page, sortOrder }) => {
-  return useQuery({
-    queryKey: ["movie-search", { keyword, genreId, page, sortOrder }],
-    queryFn: fetchMovies,
-    select: (result) => result.data,
-    keepPreviousData: true,
-  });
-};
+// // 커스텀 훅 정의
+// export const useSearchMovieQuery = ({ keyword, genreId, page, sortOrder }) => {
+//   return useQuery({
+//     queryKey: ["movie-search", { keyword, genreId, page, sortOrder }],
+//     queryFn: fetchMovies,
+//     select: (result) => result.data,
+//     keepPreviousData: true,
+//   });
+// };

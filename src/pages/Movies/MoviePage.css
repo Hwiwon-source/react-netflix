@@ -1,4 +1,3 @@
-
 .MoviePage .movie-card-wrapper {
   /* border: 3px solid blue; */
   display: flex;
@@ -83,7 +82,10 @@
 .filter-area {
   padding: 20px;
   border-radius: 8px;
-  margin-bottom: 20px;
+}
+
+.filter-area .filter-title {
+  font-size: 1.5rem;
 }
 
 /* 장르 섹션 */
@@ -102,6 +104,10 @@
   font-size: 14px;
   cursor: pointer;
   transition: all 0.3s ease;
+}
+
+.genre-section .selected-genre {
+  background-color: #bb2d3b;
 }
 
 /* 정렬 옵션 섹션 */
@@ -123,7 +129,7 @@
 
 /* 반응형 디자인 */
 @media (max-width: 768px) {
-  .filter-area {
+  .MoviePage .filter-area {
     padding: 15px;
   }
 
@@ -141,6 +147,10 @@
 @media (max-width: 576px) {
   .filter-area {
     padding: 10px;
+  }
+
+  .filter-area .filter-title {
+    font-size: 1.2rem;
   }
 
   .genre-section button {
